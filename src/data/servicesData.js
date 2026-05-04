@@ -1,0 +1,42 @@
+export const services = [
+  {
+    id: 'corporate',
+    title: 'Corporate Solutions',
+    category: 'Teams',
+    description: 'Team bonding, leadership games, wellness workshops for organizations.',
+    benefits: ['Stronger teams', 'Mindful leadership', 'Wellness culture'],
+    link: '/services/corporate-solutions',
+  },
+  {
+    id: 'csr',
+    title: 'CSR Programs',
+    category: 'Impact',
+    description: 'Community-focused programs aligned with corporate social responsibility.',
+    benefits: ['Community impact', 'Engagement', 'Sustainability'],
+    link: '/services/csr-programs',
+  },
+  {
+    id: 'senior',
+    title: 'Senior Wellness',
+    category: 'Wellness',
+    description: 'Gentle games and workshops for seniors promoting joy and connection.',
+    benefits: ['Joyful movement', 'Connection', 'Cognitive health'],
+    link: '/services/senior-wellness',
+  },
+  {
+    id: 'schools',
+    title: 'Kids & Schools',
+    category: 'Education',
+    description: 'Play-based learning experiences for schools and youth groups.',
+    benefits: ['Playful learning', 'Creativity', 'Collaboration'],
+    link: '/services/kids-schools',
+  },
+  {
+    id: 'custom',
+    title: 'Custom Game Design',
+    category: 'Design',
+    description: 'Tailored game experiences for your brand or event.',
+    benefits: ['Brand alignment', 'Unique experiences', 'Expert design'],
+    link: '/services/custom-game-design',
+  },
+]

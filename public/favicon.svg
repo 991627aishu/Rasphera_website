@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" role="img" aria-label="Rasphera crown die">
+  <defs>
+    <style>
+      .crown{fill:#E1701A}
+      .die{fill:#0D2236}
+      .pip{fill:#FFFFFF}
+      .stroke{fill:none;stroke:#FFFFFF;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    </style>
+  </defs>
+  <path class="crown" d="M18 30l10 8 8-14 10 14 10-14 8 14 10-8v12H18z"/>
+  <rect x="18" y="36" width="60" height="44" rx="10" class="die"/>
+  <ellipse cx="48" cy="44" rx="6.5" ry="4.2" class="pip" />
+  <path class="stroke" d="M28 46c6-4 16-6 20-6s14 2 20 6" opacity=".9"/>
+  <path class="stroke" d="M48 46v24"/>
+  <path class="stroke" d="M28 70c6 2 13 4 20 4s14-2 20-4"/>
+  <circle cx="32" cy="56" r="3.4" class="pip"/>
+  <circle cx="32" cy="68" r="3.4" class="pip"/>
+  <circle cx="48" cy="62" r="3.4" class="pip"/>
+  <circle cx="64" cy="56" r="3.4" class="pip"/>
+  <circle cx="64" cy="68" r="3.4" class="pip"/>
+</svg>
