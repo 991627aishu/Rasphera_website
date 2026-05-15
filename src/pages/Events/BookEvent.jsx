@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { services } from '../../data/servicesData.js'
 import { useAuth } from '../../context/AuthContext.jsx'
 import LoginModal from '../../common/LoginModal.jsx'
+import { saveEventBooking } from '../../firebase/firestore.js'
+import toast from 'react-hot-toast'
 
 export default function BookEvent() {
   const { user } = useAuth()
@@ -36,11 +38,19 @@ export default function BookEvent() {
     return e
   }
 
-  const onSubmit = (ev) => {
+  const onSubmit = async (ev) => {
     ev.preventDefault()
     const e = validate()
     setErrors(e)
-    if (Object.keys(e).length === 0) setSubmitted(true)
+    if (Object.keys(e).length === 0) {
+      try {
+        await saveEventBooking(form, user?.uid);
+        setSubmitted(true);
+        toast.success("Event booked successfully!");
+      } catch (err) {
+        toast.error("Failed to book event. Please try again.");
+      }
+    }
   }
 
   return (

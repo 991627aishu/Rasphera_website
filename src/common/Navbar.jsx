@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Link, NavLink, useLocation } from 'react-router-dom'
-import { Menu, X, Sun, Moon, ChevronDown, Dice5, ShoppingCart, User } from 'lucide-react'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { Menu, X, Sun, Moon, ChevronDown, Dice5, ShoppingCart, User, ShieldCheck } from 'lucide-react'
 import { useAuth } from '../context/AuthContext.jsx'
 import LoginModal from './LoginModal.jsx'
+import toast from 'react-hot-toast'
 import die from '../assets/die-logo.svg'
 
 const navGroups = [
@@ -46,6 +47,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const { user, login, logout } = useAuth()
   const location = useLocation()
+  const navigate = useNavigate()
   const dropdownRef = useRef(null)
 
   useEffect(() => {
@@ -190,11 +192,21 @@ export default function Navbar() {
 
             {user ? (
               <div className="hidden md:flex items-center gap-2">
-                <NavLink to="/dashboard" className="btn-primary text-sm py-2 px-4">
-                  <User size={14} /> Dashboard
-                </NavLink>
+                {user.role === 'Admin' ? (
+                  <NavLink to="/dashboard/admin" className="btn-primary text-sm py-2 px-4 bg-blue-600 hover:bg-blue-700 border-blue-600 hover:border-blue-700">
+                    <ShieldCheck size={14} /> Admin
+                  </NavLink>
+                ) : (
+                  <NavLink to="/dashboard" className="btn-primary text-sm py-2 px-4">
+                    <User size={14} /> Dashboard
+                  </NavLink>
+                )}
                 <button
-                  onClick={logout}
+                  onClick={async () => {
+                    await logout();
+                    toast.success('Logged out successfully');
+                    navigate('/');
+                  }}
                   className="text-sm px-3 py-2 rounded-xl card text-text/70 dark:text-cream/70 hover:text-accent transition"
                 >
                   Logout
@@ -202,18 +214,12 @@ export default function Navbar() {
               </div>
             ) : (
               <div className="hidden md:flex items-center gap-2">
-                <button
-                  onClick={() => { setPresetRole('User'); setLoginOpen(true) }}
-                  className="btn-ghost text-sm py-2 px-4"
-                >
-                  Sign In
-                </button>
-                <button
-                  onClick={() => { setPresetRole('Admin'); setLoginOpen(true) }}
+                <Link
+                  to="/auth"
                   className="btn-primary text-sm py-2 px-4"
                 >
-                  Admin
-                </button>
+                  Sign In / Register
+                </Link>
               </div>
             )}
 
@@ -280,13 +286,16 @@ export default function Navbar() {
                 <div className="mt-3 pt-3 border-t border-accent/10 flex gap-2">
                   {user ? (
                     <>
-                      <NavLink to="/dashboard" className="btn-primary text-sm py-2 px-4 flex-1 text-center">Dashboard</NavLink>
-                      <button onClick={logout} className="btn-ghost text-sm py-2 px-3">Logout</button>
+                      {user.role === 'Admin' ? (
+                        <NavLink to="/dashboard/admin" className="btn-primary text-sm py-2 px-4 flex-1 text-center bg-blue-600 border-blue-600">Admin</NavLink>
+                      ) : (
+                        <NavLink to="/dashboard" className="btn-primary text-sm py-2 px-4 flex-1 text-center">Dashboard</NavLink>
+                      )}
+                      <button onClick={async () => { await logout(); toast.success('Logged out'); navigate('/'); }} className="btn-ghost text-sm py-2 px-3">Logout</button>
                     </>
                   ) : (
                     <>
-                      <button onClick={() => { setPresetRole('User'); setLoginOpen(true) }} className="btn-ghost text-sm py-2 px-4 flex-1">Sign In</button>
-                      <button onClick={() => { setPresetRole('Event Manager'); setLoginOpen(true) }} className="btn-primary text-sm py-2 px-4 flex-1">Book Event</button>
+                      <Link to="/auth" className="btn-primary text-sm py-2 px-4 flex-1 text-center">Sign In</Link>
                     </>
                   )}
                 </div>

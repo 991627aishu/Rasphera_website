@@ -1,10 +1,43 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react'
+import { saveContactMessage } from '../firebase/firestore'
+import { useAuth } from '../context/AuthContext'
+import toast from 'react-hot-toast'
 
 export default function Contact() {
-  const [sent, setSent] = useState(false)
-  const handleSubmit = (e) => { e.preventDefault(); setSent(true) }
+  const { user } = useAuth();
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => { 
+    e.preventDefault(); 
+    setLoading(true);
+    setError(null);
+    try {
+      await saveContactMessage(formData, user?.uid);
+      setSent(true);
+      toast.success("Message sent successfully!");
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      console.error(err);
+      setError('Failed to send message. Please try again.');
+      toast.error('Failed to send message. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -56,26 +89,27 @@ export default function Contact() {
             ) : (
               <form onSubmit={handleSubmit} className="card-premium rounded-3xl p-8 space-y-5">
                 <h2 className="font-display text-2xl font-bold text-highlight dark:text-cream">Send a Message</h2>
+                {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-medium text-text/60 dark:text-cream/60 uppercase tracking-wide block mb-1.5">Full Name</label>
-                    <input className="input-field" placeholder="Your name" required />
+                    <input name="name" value={formData.name} onChange={handleChange} className="input-field" placeholder="Your name" required />
                   </div>
                   <div>
                     <label className="text-xs font-medium text-text/60 dark:text-cream/60 uppercase tracking-wide block mb-1.5">Email</label>
-                    <input type="email" className="input-field" placeholder="you@example.com" required />
+                    <input type="email" name="email" value={formData.email} onChange={handleChange} className="input-field" placeholder="you@example.com" required />
                   </div>
                 </div>
                 <div>
                   <label className="text-xs font-medium text-text/60 dark:text-cream/60 uppercase tracking-wide block mb-1.5">Subject</label>
-                  <input className="input-field" placeholder="How can we help?" />
+                  <input name="subject" value={formData.subject} onChange={handleChange} className="input-field" placeholder="How can we help?" />
                 </div>
                 <div>
                   <label className="text-xs font-medium text-text/60 dark:text-cream/60 uppercase tracking-wide block mb-1.5">Message</label>
-                  <textarea className="input-field resize-none" rows={5} placeholder="Tell us more..." required />
+                  <textarea name="message" value={formData.message} onChange={handleChange} className="input-field resize-none" rows={5} placeholder="Tell us more..." required />
                 </div>
-                <button type="submit" className="btn-primary w-full justify-center py-4">
-                  <Send size={16} /> Send Message
+                <button type="submit" disabled={loading} className="btn-primary w-full justify-center py-4 disabled:opacity-70 disabled:cursor-not-allowed">
+                  <Send size={16} /> {loading ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
             )}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { 
@@ -15,11 +15,15 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { signUp, logIn } from '../firebase/auth';
+import toast from 'react-hot-toast';
 
 const AuthPage = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('login'); // 'login' or 'register'
   const [role, setRole] = useState('user');
   const [formData, setFormData] = useState({
@@ -32,15 +36,36 @@ const AuthPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (user) {
+      if (user.role === 'Admin') {
+        navigate('/dashboard/admin');
+      } else {
+        navigate('/dashboard');
+      }
+    }
+  }, [user, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Simulate login/register logic
-    login({ 
-      name: formData.name || formData.email.split('@')[0], 
-      email: formData.email, 
-      role: role 
-    });
-    navigate('/home');
+    setError(null);
+    setLoading(true);
+
+    try {
+      if (activeTab === 'register') {
+        await signUp(formData.email, formData.password, formData.name);
+        toast.success("Account created successfully!");
+      } else {
+        await logIn(formData.email, formData.password);
+        toast.success("Welcome back!");
+      }
+      // Redirection is handled by the useEffect watching the 'user' state
+    } catch (err) {
+      setError(err.message || "Failed to authenticate");
+      toast.error(err.message || "Failed to authenticate");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -139,6 +164,11 @@ const AuthPage = () => {
             <p className="text-slate-500 dark:text-slate-400">
               {activeTab === 'login' ? "Please enter your details to sign in." : "Fill in the information below to join us."}
             </p>
+            {error && (
+              <div className="mt-4 p-3 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-xl text-sm font-medium border border-red-200 dark:border-red-800">
+                {error}
+              </div>
+            )}
           </div>
 
           {/* Tab Switcher */}
@@ -226,37 +256,14 @@ const AuthPage = () => {
               </div>
             </div>
 
-            {/* Role Selection */}
-            <div className="space-y-4">
-              <label className="text-sm font-bold text-slate-700 dark:text-slate-300 block ml-1">Account Role</label>
-              <div className="grid grid-cols-2 gap-4">
-                <button 
-                  type="button"
-                  onClick={() => setRole('user')}
-                  className={`flex items-center justify-center gap-3 p-4 rounded-2xl border transition-all ${role === 'user' ? 'bg-accent/10 border-accent text-accent' : 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10'}`}
-                >
-                  <UserCircle size={22} className={role === 'user' ? 'text-accent' : 'text-slate-400 dark:text-slate-500'} />
-                  <span className={`font-bold ${role === 'user' ? 'text-accent' : 'text-slate-900 dark:text-white'}`}>User</span>
-                  {role === 'user' && <CheckCircle2 size={16} className="ml-auto" />}
-                </button>
-                <button 
-                  type="button"
-                  onClick={() => setRole('admin')}
-                  className={`flex items-center justify-center gap-3 p-4 rounded-2xl border transition-all ${role === 'admin' ? 'bg-blue-500/10 border-blue-500 text-blue-500' : 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10'}`}
-                >
-                  <ShieldCheck size={22} className={role === 'admin' ? 'text-blue-500' : 'text-slate-400 dark:text-slate-500'} />
-                  <span className={`font-bold ${role === 'admin' ? 'text-blue-500' : 'text-slate-900 dark:text-white'}`}>Admin</span>
-                  {role === 'admin' && <CheckCircle2 size={16} className="ml-auto" />}
-                </button>
-              </div>
-            </div>
-
+            {/* Role Selection is determined securely on the backend/auth logic */}
             <button 
               type="submit"
-              className="w-full py-5 rounded-2xl bg-accent hover:bg-accent-light text-white font-bold text-xl shadow-[0_15px_30px_rgba(255,107,0,0.3)] transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 group mt-4"
+              disabled={loading}
+              className="w-full py-5 rounded-2xl bg-accent hover:bg-accent-light text-white font-bold text-xl shadow-[0_15px_30px_rgba(255,107,0,0.3)] transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 group mt-4 disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {activeTab === 'login' ? 'Sign In' : 'Create Account'}
-              <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
+              {loading ? 'Processing...' : (activeTab === 'login' ? 'Sign In' : 'Create Account')}
+              {!loading && <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
 

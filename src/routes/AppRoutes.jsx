@@ -50,10 +50,13 @@ const UserDashboard = lazy(() => import('../pages/Dashboard/UserDashboard.jsx'))
 const EventManagerDashboard = lazy(() => import('../pages/Dashboard/EventManagerDashboard.jsx'))
 
 function ProtectedRoute({ roles, children }) {
-  const { user } = useAuth()
+  const { user, loading } = useAuth()
   const allowed = useHasRole(roles)
-  if (!user) return <Navigate to="/" replace />
-  if (!allowed) return <Navigate to="/" replace />
+
+  if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+
+  if (!user) return <Navigate to="/auth" replace />
+  if (!allowed) return <Navigate to="/auth" replace />
   return children
 }
 
