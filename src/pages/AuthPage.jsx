@@ -13,6 +13,7 @@ import {
   Moon,
   Sun
 } from 'lucide-react';
+import authVisual from '../assets/auth-visual.png';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { signUp, logIn } from '../firebase/auth';
@@ -109,7 +110,7 @@ const AuthPage = () => {
               {/* Parent container for shadow since clip-path cuts it off */}
               <div className="w-full relative z-10 drop-shadow-[0_30px_60px_rgba(0,0,0,0.12)] dark:drop-shadow-[0_30px_60px_rgba(0,0,0,0.45)] flex justify-center">
                 <img 
-                  src="/src/assets/auth-visual.png" 
+                  src={authVisual} 
                   alt="Rasphera Gaming" 
                   className="w-[110%] h-auto object-contain transition-transform duration-1000 group-hover/img:scale-105"
                   style={{ 

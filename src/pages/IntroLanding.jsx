@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react';
 import logo from '../assets/die-logo.svg'; // or your actual logo file
+import tablePlay from '../assets/table-play.png';
+import heroMain from '../assets/hero-main.png';
+import gardenPlay from '../assets/garden-play.png';
 import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin, Instagram, Twitter, Linkedin } from 'lucide-react';
@@ -194,7 +197,7 @@ const IntroLanding = () => {
                   <div className="absolute -inset-8 bg-blue-500/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 rounded-full" />
                   <div className="rounded-[4rem] overflow-hidden shadow-card border-2 border-white/40 dark:border-white/5 transition-all duration-700 group-hover:shadow-glow-blue relative z-10 bg-white/5 backdrop-blur-sm">
                     <img 
-                      src="/src/assets/table-play.png" 
+                      src={tablePlay} 
                       alt="Family connection" 
                       className="w-full h-auto object-cover opacity-95"
                     />
@@ -232,7 +235,7 @@ const IntroLanding = () => {
                   <div className="absolute -inset-8 bg-orange-500/10 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000 rounded-full" />
                   <div className="rounded-[4rem] overflow-hidden shadow-card border-2 border-white/40 dark:border-white/5 transition-all duration-700 group-hover:shadow-glow-orange relative z-10 bg-white/5 backdrop-blur-sm">
                     <img 
-                      src="/src/assets/hero-main.png" 
+                      src={heroMain} 
                       alt="Sustainable play" 
                       className="w-full h-auto object-cover opacity-95"
                     />
@@ -344,7 +347,7 @@ const IntroLanding = () => {
               className="relative rounded-[3.5rem] overflow-hidden aspect-[4/3] shadow-2xl group"
             >
               <img 
-                src="/src/assets/garden-play.png" 
+                src={gardenPlay} 
                 alt="Movement for sustainability" 
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
               />
@@ -484,7 +487,7 @@ const IntroLanding = () => {
           >
             {/* Background image overlay for CTA - Improved blending */}
             <div className="absolute inset-0 opacity-10 dark:opacity-20 pointer-events-none">
-              <img src="/src/assets/table-play.png" className="w-full h-full object-cover" alt="" />
+              <img src={tablePlay} className="w-full h-full object-cover" alt="" />
             </div>
 
             <div className="relative z-10">

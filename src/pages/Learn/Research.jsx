@@ -1,14 +1,20 @@
 import React, { useState } from 'react'
 
+import page1 from '../../assets/page1.png';
+import page2 from '../../assets/page2.png';
+import page3 from '../../assets/page3.png';
+import page4 from '../../assets/page4.png';
+import page5 from '../../assets/page5.png';
+
 export default function Research() {
 
   // ✅ Add your 5 pages here
   const pages = [
-    "/src/assets/page1.png",
-    "/src/assets/page2.png",
-    "/src/assets/page3.png",
-    "/src/assets/page4.png",
-    "/src/assets/page5.png",
+    page1,
+    page2,
+    page3,
+    page4,
+    page5,
   ]
 
   const [page, setPage] = useState(0)
